@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "FisioBase Academy",
+    "slug": "fisiobase-academy",
+    "scheme": "fisiobase",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fisiobase.academy"
+    },
+    "android": {
+      "package": "com.fisiobase.academy",
+      "adaptiveIcon": {
+        "backgroundColor": "#0f766e"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-notifications",
+      "expo-splash-screen"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

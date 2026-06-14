@@ -1,0 +1,366 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  STUDENT
+  PROFESSIONAL
+  CURATOR
+  ADMIN
+}
+
+enum AuthProvider {
+  EMAIL
+  GOOGLE
+  APPLE
+}
+
+enum ScientificSource {
+  PUBMED
+  EUROPE_PMC
+  PUBMED_CENTRAL
+  PEDRO
+  COCHRANE
+  SCIELO
+  LILACS
+  CLINICAL_TRIALS
+  WHO
+}
+
+enum ArticleStatus {
+  DRAFT
+  IN_REVIEW
+  PUBLISHED
+  REJECTED
+  ARCHIVED
+}
+
+enum ImportStatus {
+  STARTED
+  SUCCESS
+  PARTIAL
+  FAILED
+}
+
+enum SubscriptionTier {
+  FREE
+  PREMIUM
+}
+
+enum CertificateStatus {
+  ISSUED
+  REVOKED
+}
+
+enum EvidenceLevel {
+  VERY_LOW
+  LOW
+  MODERATE
+  HIGH
+}
+
+enum RecommendationStrength {
+  AGAINST
+  WEAK_AGAINST
+  UNCERTAIN
+  WEAK_FOR
+  STRONG_FOR
+}
+
+enum StudyDesign {
+  SYSTEMATIC_REVIEW
+  META_ANALYSIS
+  RANDOMIZED_TRIAL
+  COHORT
+  CASE_CONTROL
+  CROSS_SECTIONAL
+  CASE_SERIES
+  GUIDELINE
+  CONSENSUS
+  QUALITATIVE
+  OTHER
+}
+
+model User {
+  id              String            @id @default(cuid())
+  email           String            @unique
+  name            String?
+  avatarUrl       String?
+  passwordHash    String?
+  role            UserRole          @default(STUDENT)
+  provider        AuthProvider      @default(EMAIL)
+  providerId      String?
+  subscription    SubscriptionTier  @default(FREE)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  progresses      Progress[]
+  quizAttempts    QuizAttempt[]
+  certificates    Certificate[]
+  flashcards      Flashcard[]
+  curatedArticles Article[]         @relation("ArticleCurator")
+}
+
+model Category {
+  id        String          @id @default(cuid())
+  name      String
+  slug      String          @unique
+  createdAt DateTime        @default(now())
+  articles  Article[]
+  tracks    LearningTrack[]
+  atlasTopics AtlasTopic[]
+}
+
+model Article {
+  id              String           @id @default(cuid())
+  title           String
+  abstract        String?
+  authors         String[]
+  journal         String?
+  publicationDate DateTime?
+  language        String?
+  source          ScientificSource
+  sourceUrl       String
+  doi             String?
+  pmid            String?
+  pmcid           String?
+  externalId      String?
+  license         String?
+  openAccess      Boolean          @default(false)
+  status          ArticleStatus    @default(DRAFT)
+  rawMetadata     Json?
+  categoryId      String?
+  curatorId       String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  category        Category?        @relation(fields: [categoryId], references: [id])
+  curator         User?            @relation("ArticleCurator", fields: [curatorId], references: [id])
+  lessonArticles  LessonArticle[]
+  atlasLinks      AtlasArticle[]
+
+  @@index([source, externalId])
+  @@index([status])
+  @@index([doi])
+  @@index([pmid])
+}
+
+model AtlasTopic {
+  id               String              @id @default(cuid())
+  title            String
+  slug             String              @unique
+  summary          String
+  clinicalArea     String
+  bodyRegion       String?
+  population       String?
+  tags             String[]
+  evidenceLevel    EvidenceLevel       @default(LOW)
+  recommendation   RecommendationStrength @default(UNCERTAIN)
+  lastReviewedAt   DateTime?
+  categoryId       String?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  category         Category?           @relation(fields: [categoryId], references: [id])
+  clinicalQuestions ClinicalQuestion[]
+  outcomes         AtlasOutcome[]
+  interventions    AtlasIntervention[]
+  articles         AtlasArticle[]
+  guidelines       AtlasGuideline[]
+}
+
+model ClinicalQuestion {
+  id             String      @id @default(cuid())
+  atlasTopicId   String
+  question       String
+  population     String
+  intervention   String
+  comparison     String?
+  outcome        String
+  answerSummary  String?
+  evidenceLevel  EvidenceLevel @default(LOW)
+  createdAt      DateTime    @default(now())
+  atlasTopic     AtlasTopic  @relation(fields: [atlasTopicId], references: [id], onDelete: Cascade)
+}
+
+model AtlasOutcome {
+  id             String      @id @default(cuid())
+  atlasTopicId   String
+  name           String
+  description    String?
+  measure        String?
+  minimalImportantDifference String?
+  evidenceLevel  EvidenceLevel @default(LOW)
+  atlasTopic     AtlasTopic  @relation(fields: [atlasTopicId], references: [id], onDelete: Cascade)
+}
+
+model AtlasIntervention {
+  id             String      @id @default(cuid())
+  atlasTopicId   String
+  name           String
+  description    String?
+  dosage         String?
+  indication     String?
+  contraindication String?
+  recommendation RecommendationStrength @default(UNCERTAIN)
+  evidenceLevel  EvidenceLevel @default(LOW)
+  atlasTopic     AtlasTopic  @relation(fields: [atlasTopicId], references: [id], onDelete: Cascade)
+}
+
+model AtlasArticle {
+  atlasTopicId String
+  articleId    String
+  studyDesign  StudyDesign @default(OTHER)
+  evidenceRole String?
+  notes        String?
+  atlasTopic   AtlasTopic @relation(fields: [atlasTopicId], references: [id], onDelete: Cascade)
+  article      Article    @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@id([atlasTopicId, articleId])
+}
+
+model AtlasGuideline {
+  id             String      @id @default(cuid())
+  atlasTopicId   String
+  title          String
+  organization   String
+  url            String
+  year           Int?
+  country        String?
+  license        String?
+  summary        String?
+  atlasTopic     AtlasTopic  @relation(fields: [atlasTopicId], references: [id], onDelete: Cascade)
+}
+
+model ImportLog {
+  id              String           @id @default(cuid())
+  source          ScientificSource
+  status          ImportStatus
+  query           String?
+  importedCount   Int              @default(0)
+  skippedCount    Int              @default(0)
+  errorMessage    String?
+  metadata        Json?
+  startedAt       DateTime         @default(now())
+  finishedAt      DateTime?
+}
+
+model LearningTrack {
+  id               String            @id @default(cuid())
+  title            String
+  slug             String            @unique
+  description      String
+  categoryId       String
+  estimatedMinutes Int               @default(0)
+  isPremium        Boolean           @default(false)
+  publishedAt      DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  category         Category          @relation(fields: [categoryId], references: [id])
+  modules          Module[]
+  certificates     Certificate[]
+}
+
+model Module {
+  id        String        @id @default(cuid())
+  title     String
+  order     Int
+  trackId   String
+  track     LearningTrack @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  lessons   Lesson[]
+}
+
+model Lesson {
+  id               String          @id @default(cuid())
+  title            String
+  content          String?
+  order            Int
+  estimatedMinutes Int             @default(0)
+  moduleId         String
+  module           Module          @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  articles         LessonArticle[]
+  quizzes          Quiz[]
+  progresses       Progress[]
+}
+
+model LessonArticle {
+  lessonId  String
+  articleId String
+  lesson    Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@id([lessonId, articleId])
+}
+
+model Quiz {
+  id          String        @id @default(cuid())
+  title       String
+  lessonId    String?
+  trackId     String?
+  isFinal     Boolean       @default(false)
+  lesson      Lesson?       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  questions   Question[]
+  attempts    QuizAttempt[]
+}
+
+model Question {
+  id            String   @id @default(cuid())
+  quizId        String
+  statement     String
+  options       Json
+  correctOption Int
+  explanation   String?
+  quiz          Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model QuizAttempt {
+  id          String   @id @default(cuid())
+  userId      String
+  quizId      String
+  score       Decimal  @db.Decimal(5, 2)
+  answers     Json
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model Progress {
+  id              String   @id @default(cuid())
+  userId          String
+  lessonId        String
+  studiedSeconds  Int      @default(0)
+  completed       Boolean  @default(false)
+  grade           Decimal? @db.Decimal(5, 2)
+  completedAt     DateTime?
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson          Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}
+
+model Certificate {
+  id             String            @id @default(cuid())
+  userId         String
+  trackId        String
+  code           String            @unique
+  qrCodeUrl      String?
+  pdfUrl         String?
+  status         CertificateStatus @default(ISSUED)
+  issuedAt       DateTime          @default(now())
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  track          LearningTrack     @relation(fields: [trackId], references: [id], onDelete: Cascade)
+}
+
+model Flashcard {
+  id        String   @id @default(cuid())
+  userId    String
+  front     String
+  back      String
+  sourceId  String?
+  dueAt     DateTime?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
