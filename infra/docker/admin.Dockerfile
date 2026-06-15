@@ -22,7 +22,7 @@ ENV NODE_ENV=production
 ENV PORT=3000
 
 # Next.js standalone output
-COPY --from=build-admin /app/apps/admin/.next/standalone /app/apps/admin/
+COPY --from=build-admin /app/apps/admin/.next/standalone /app/
 COPY --from=build-admin /app/apps/admin/.next/static /app/apps/admin/.next/static
 COPY --from=build-admin /app/apps/admin/public /app/apps/admin/public
 

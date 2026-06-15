@@ -29,7 +29,7 @@ ENV PORT=3001
 
 # Next.js standalone output structure:
 # .next/standalone/ contains the server and its dependencies
-COPY --from=build-web /app/apps/web/.next/standalone /app/apps/web/
+COPY --from=build-web /app/apps/web/.next/standalone /app/
 COPY --from=build-web /app/apps/web/.next/static /app/apps/web/.next/static
 COPY --from=build-web /app/apps/web/public /app/apps/web/public
 

@@ -35,6 +35,7 @@ COPY --from=build-api /app/packages/types/dist /app/packages/types/dist
 COPY --from=build-api /app/packages/types/package.json /app/packages/types/package.json
 COPY --from=build-api /app/packages/database/dist /app/packages/database/dist
 COPY --from=build-api /app/packages/database/package.json /app/packages/database/package.json
+COPY --from=build-api /app/packages/database/prisma /app/packages/database/prisma
 
 # Copy API dist
 COPY --from=build-api /app/apps/api/dist /app/apps/api/dist
@@ -42,6 +43,8 @@ COPY --from=build-api /app/apps/api/package.json /app/apps/api/package.json
 
 # Copy node_modules from the build stage after Prisma Client generation
 COPY --from=build-api /app/node_modules /app/node_modules
+COPY --from=build-api /app/apps/api/node_modules /app/apps/api/node_modules
+COPY --from=build-api /app/packages/database/node_modules /app/packages/database/node_modules
 COPY --from=deps /app/pnpm-lock.yaml /app/pnpm-lock.yaml
 
 WORKDIR /app/apps/api
