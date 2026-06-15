@@ -1,16 +1,4 @@
-import {
-  ArticleStatus,
-  AuthProvider,
-  CertificateStatus,
-  EvidenceLevel,
-  ImportStatus,
-  PrismaClient,
-  RecommendationStrength,
-  ScientificSource,
-  StudyDesign,
-  SubscriptionTier,
-  UserRole
-} from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -61,33 +49,33 @@ const users = [
   {
     email: "admin@fisiobase.academy",
     name: "Admin FisioBase",
-    role: UserRole.ADMIN,
-    provider: AuthProvider.EMAIL,
-    subscription: SubscriptionTier.PREMIUM,
+    role: "ADMIN" as const,
+    provider: "EMAIL" as const,
+    subscription: "PREMIUM" as const,
     passwordHash: "$2b$10$7QJp4Zx3hM7oR8bFq0m0OOwGxWvF8BqIrQ4JYz8I3FzXw9d5nHf0G"
   },
   {
     email: "curadoria@fisiobase.academy",
     name: "Curadoria Cientifica",
-    role: UserRole.CURATOR,
-    provider: AuthProvider.EMAIL,
-    subscription: SubscriptionTier.PREMIUM,
+    role: "CURATOR" as const,
+    provider: "EMAIL" as const,
+    subscription: "PREMIUM" as const,
     passwordHash: "$2b$10$7QJp4Zx3hM7oR8bFq0m0OOwGxWvF8BqIrQ4JYz8I3FzXw9d5nHf0G"
   },
   {
     email: "aluna.demo@fisiobase.academy",
     name: "Ana Paula Demo",
-    role: UserRole.STUDENT,
-    provider: AuthProvider.EMAIL,
-    subscription: SubscriptionTier.FREE,
+    role: "STUDENT" as const,
+    provider: "EMAIL" as const,
+    subscription: "FREE" as const,
     passwordHash: "$2b$10$7QJp4Zx3hM7oR8bFq0m0OOwGxWvF8BqIrQ4JYz8I3FzXw9d5nHf0G"
   },
   {
     email: "fisio.premium@fisiobase.academy",
     name: "Lucas Fisioterapeuta",
-    role: UserRole.PROFESSIONAL,
-    provider: AuthProvider.GOOGLE,
-    subscription: SubscriptionTier.PREMIUM
+    role: "PROFESSIONAL" as const,
+    provider: "GOOGLE" as const,
+    subscription: "PREMIUM" as const
   }
 ];
 
@@ -100,7 +88,7 @@ const articles = [
     journal: "Cochrane Database of Systematic Reviews",
     publicationDate: new Date("2021-03-09"),
     language: "en",
-    source: ScientificSource.COCHRANE,
+    source: "COCHRANE" as const,
     sourceUrl: "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD009790.pub2/full",
     doi: "10.1002/14651858.CD009790.pub2",
     pmid: "33759398",
@@ -108,7 +96,7 @@ const articles = [
     externalId: "cochrane-lbp-exercise-2021",
     license: "Cochrane abstract and metadata",
     openAccess: false,
-    status: ArticleStatus.PUBLISHED,
+    status: "PUBLISHED" as const,
     categorySlug: "ortopedia"
   },
   {
@@ -119,7 +107,7 @@ const articles = [
     journal: "Annals of Internal Medicine",
     publicationDate: new Date("2017-04-04"),
     language: "en",
-    source: ScientificSource.PUBMED,
+    source: "PUBMED" as const,
     sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/28192789/",
     doi: "10.7326/M16-2367",
     pmid: "28192789",
@@ -127,7 +115,7 @@ const articles = [
     externalId: "28192789",
     license: "Publisher metadata via PubMed",
     openAccess: false,
-    status: ArticleStatus.PUBLISHED,
+    status: "PUBLISHED" as const,
     categorySlug: "ortopedia"
   },
   {
@@ -138,7 +126,7 @@ const articles = [
     journal: "Stroke",
     publicationDate: new Date("2017-05-01"),
     language: "en",
-    source: ScientificSource.PUBMED,
+    source: "PUBMED" as const,
     sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/28386042/",
     doi: "10.1161/STROKEAHA.116.016131",
     pmid: "28386042",
@@ -146,7 +134,7 @@ const articles = [
     externalId: "28386042",
     license: "Publisher metadata via PubMed",
     openAccess: false,
-    status: ArticleStatus.PUBLISHED,
+    status: "PUBLISHED" as const,
     categorySlug: "neurologia"
   },
   {
@@ -157,7 +145,7 @@ const articles = [
     journal: "Cochrane Database of Systematic Reviews",
     publicationDate: new Date("2020-04-22"),
     language: "en",
-    source: ScientificSource.COCHRANE,
+    source: "COCHRANE" as const,
     sourceUrl: "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD001920.pub3/full",
     doi: "10.1002/14651858.CD001920.pub3",
     pmid: "32324955",
@@ -165,7 +153,7 @@ const articles = [
     externalId: "cochrane-stroke-rehab-2020",
     license: "Cochrane abstract and metadata",
     openAccess: false,
-    status: ArticleStatus.PUBLISHED,
+    status: "PUBLISHED" as const,
     categorySlug: "neurologia"
   },
   {
@@ -176,7 +164,7 @@ const articles = [
     journal: "Cochrane Database of Systematic Reviews",
     publicationDate: new Date("2015-02-23"),
     language: "en",
-    source: ScientificSource.COCHRANE,
+    source: "COCHRANE" as const,
     sourceUrl: "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD003793.pub3/full",
     doi: "10.1002/14651858.CD003793.pub3",
     pmid: "25705944",
@@ -184,7 +172,7 @@ const articles = [
     externalId: "cochrane-copd-pr-2015",
     license: "Cochrane abstract and metadata",
     openAccess: false,
-    status: ArticleStatus.PUBLISHED,
+    status: "PUBLISHED" as const,
     categorySlug: "cardiorrespiratoria"
   },
   {
@@ -195,7 +183,7 @@ const articles = [
     journal: "WHO Guidance",
     publicationDate: new Date("2023-09-01"),
     language: "en",
-    source: ScientificSource.WHO,
+    source: "WHO" as const,
     sourceUrl: "https://www.who.int/publications/i/item/WHO-2019-nCoV-Clinical-2023.2",
     doi: null,
     pmid: null,
@@ -203,7 +191,7 @@ const articles = [
     externalId: "who-post-covid-rehab-2023",
     license: "WHO public guidance",
     openAccess: true,
-    status: ArticleStatus.PUBLISHED,
+    status: "PUBLISHED" as const,
     categorySlug: "cardiorrespiratoria"
   },
   {
@@ -214,7 +202,7 @@ const articles = [
     journal: "Pediatrics",
     publicationDate: new Date("2020-02-01"),
     language: "en",
-    source: ScientificSource.EUROPE_PMC,
+    source: "EUROPE_PMC" as const,
     sourceUrl: "https://europepmc.org/article/MED/32005759",
     doi: "10.1542/peds.2019-3455",
     pmid: "32005759",
@@ -222,7 +210,7 @@ const articles = [
     externalId: "32005759",
     license: "Europe PMC / PMC metadata",
     openAccess: true,
-    status: ArticleStatus.PUBLISHED,
+    status: "PUBLISHED" as const,
     categorySlug: "pediatria"
   },
   {
@@ -233,7 +221,7 @@ const articles = [
     journal: "British Journal of Sports Medicine",
     publicationDate: new Date("2020-08-01"),
     language: "en",
-    source: ScientificSource.PUBMED_CENTRAL,
+    source: "PUBMED_CENTRAL" as const,
     sourceUrl: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8092551/",
     doi: "10.1136/bjsports-2019-101512",
     pmid: "32546524",
@@ -241,7 +229,7 @@ const articles = [
     externalId: "PMC8092551",
     license: "CC BY-NC 4.0",
     openAccess: true,
-    status: ArticleStatus.PUBLISHED,
+    status: "PUBLISHED" as const,
     categorySlug: "geriatria"
   },
   {
@@ -252,7 +240,7 @@ const articles = [
     journal: "British Journal of Sports Medicine",
     publicationDate: new Date("2016-07-01"),
     language: "en",
-    source: ScientificSource.PUBMED,
+    source: "PUBMED" as const,
     sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/27162233/",
     doi: "10.1136/bjsports-2016-096278",
     pmid: "27162233",
@@ -260,7 +248,7 @@ const articles = [
     externalId: "27162233",
     license: "Publisher metadata via PubMed",
     openAccess: false,
-    status: ArticleStatus.PUBLISHED,
+    status: "PUBLISHED" as const,
     categorySlug: "esportiva"
   },
   {
@@ -271,7 +259,7 @@ const articles = [
     journal: "Cochrane Database of Systematic Reviews",
     publicationDate: new Date("2018-10-04"),
     language: "en",
-    source: ScientificSource.COCHRANE,
+    source: "COCHRANE" as const,
     sourceUrl: "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD005654.pub4/full",
     doi: "10.1002/14651858.CD005654.pub4",
     pmid: "30288727",
@@ -279,7 +267,7 @@ const articles = [
     externalId: "cochrane-pfmt-sui-2018",
     license: "Cochrane abstract and metadata",
     openAccess: false,
-    status: ArticleStatus.PUBLISHED,
+    status: "PUBLISHED" as const,
     categorySlug: "saude-da-mulher"
   },
   {
@@ -290,7 +278,7 @@ const articles = [
     journal: "The Journal of Orthopaedic and Sports Physical Therapy",
     publicationDate: new Date("2016-07-01"),
     language: "en",
-    source: ScientificSource.PUBMED,
+    source: "PUBMED" as const,
     sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/27374025/",
     doi: "10.2519/jospt.2016.0302",
     pmid: "27374025",
@@ -298,7 +286,7 @@ const articles = [
     externalId: "27374025",
     license: "Publisher metadata via PubMed",
     openAccess: false,
-    status: ArticleStatus.PUBLISHED,
+    status: "PUBLISHED" as const,
     categorySlug: "terapia-manual"
   },
   {
@@ -309,7 +297,7 @@ const articles = [
     journal: "PEDro Database",
     publicationDate: new Date("2023-06-01"),
     language: "en",
-    source: ScientificSource.PEDRO,
+    source: "PEDRO" as const,
     sourceUrl: "https://pedro.org.au/english/resources/evidence-in-your-inbox/rotator-cuff-related-shoulder-pain/",
     doi: null,
     pmid: null,
@@ -317,7 +305,7 @@ const articles = [
     externalId: "pedro-shoulder-2023",
     license: "PEDro summary",
     openAccess: true,
-    status: ArticleStatus.IN_REVIEW,
+    status: "IN_REVIEW" as const,
     categorySlug: "ortopedia"
   },
   {
@@ -328,7 +316,7 @@ const articles = [
     journal: "Revista Brasileira de Fisioterapia",
     publicationDate: new Date("2022-05-01"),
     language: "pt-BR",
-    source: ScientificSource.SCIELO,
+    source: "SCIELO" as const,
     sourceUrl: "https://www.scielo.br/j/rbfis/a/pelvic-pain-review/",
     doi: "10.1590/rbfis.2022.0101",
     pmid: null,
@@ -336,7 +324,7 @@ const articles = [
     externalId: "scielo-pelvic-pain-2022",
     license: "SciELO open access",
     openAccess: true,
-    status: ArticleStatus.PUBLISHED,
+    status: "PUBLISHED" as const,
     categorySlug: "saude-da-mulher"
   },
   {
@@ -347,7 +335,7 @@ const articles = [
     journal: "LILACS",
     publicationDate: new Date("2021-11-01"),
     language: "pt-BR",
-    source: ScientificSource.LILACS,
+    source: "LILACS" as const,
     sourceUrl: "https://pesquisa.bvsalud.org/portal/resource/pt/lil-fall-prevention-2021",
     doi: null,
     pmid: null,
@@ -355,7 +343,7 @@ const articles = [
     externalId: "lilacs-falls-2021",
     license: "BVS/LILACS metadata",
     openAccess: true,
-    status: ArticleStatus.PUBLISHED,
+    status: "PUBLISHED" as const,
     categorySlug: "geriatria"
   },
   {
@@ -366,7 +354,7 @@ const articles = [
     journal: "ClinicalTrials.gov",
     publicationDate: new Date("2024-01-10"),
     language: "en",
-    source: ScientificSource.CLINICAL_TRIALS,
+    source: "CLINICAL_TRIALS" as const,
     sourceUrl: "https://clinicaltrials.gov/study/NCT05912345",
     doi: null,
     pmid: null,
@@ -374,7 +362,7 @@ const articles = [
     externalId: "NCT05912345",
     license: "ClinicalTrials.gov public registry",
     openAccess: true,
-    status: ArticleStatus.IN_REVIEW,
+    status: "IN_REVIEW" as const,
     categorySlug: "neurologia"
   }
 ];
@@ -389,12 +377,12 @@ const atlasTopics = [
     bodyRegion: "Coluna lombar",
     population: "Adultos com dor lombar aguda, subaguda ou cronica sem causa especifica identificada.",
     tags: ["dor lombar", "exercicio", "educacao", "terapia manual", "bandeiras vermelhas"],
-    evidenceLevel: EvidenceLevel.HIGH,
-    recommendation: RecommendationStrength.STRONG_FOR,
+    evidenceLevel: "HIGH" as const,
+    recommendation: "STRONG_FOR" as const,
     categorySlug: "ortopedia",
     articleRefs: [
-      { sourceUrl: "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD009790.pub2/full", studyDesign: StudyDesign.SYSTEMATIC_REVIEW, evidenceRole: "core-review" },
-      { sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/28192789/", studyDesign: StudyDesign.GUIDELINE, evidenceRole: "guideline-summary" }
+      { sourceUrl: "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD009790.pub2/full", studyDesign: "SYSTEMATIC_REVIEW" as const, evidenceRole: "core-review" },
+      { sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/28192789/", studyDesign: "GUIDELINE" as const, evidenceRole: "guideline-summary" }
     ],
     clinicalQuestions: [
       {
@@ -405,7 +393,7 @@ const atlasTopics = [
         outcome: "Dor, incapacidade e retorno a atividade",
         answerSummary:
           "Exercicio terapeutico e recomendado como componente central, com escolha guiada por preferencia, aderencia, capacidade fisica e progressao.",
-        evidenceLevel: EvidenceLevel.HIGH
+        evidenceLevel: "HIGH" as const
       }
     ],
     outcomes: [
@@ -414,7 +402,7 @@ const atlasTopics = [
         description: "Impacto da dor nas atividades diarias.",
         measure: "Oswestry Disability Index ou Roland-Morris",
         minimalImportantDifference: "Interpretar conforme escala e contexto clinico.",
-        evidenceLevel: EvidenceLevel.MODERATE
+        evidenceLevel: "MODERATE" as const
       }
     ],
     interventions: [
@@ -424,8 +412,8 @@ const atlasTopics = [
         dosage: "Reforco ao longo do plano de cuidado.",
         indication: "Primeira linha para maioria dos pacientes.",
         contraindication: "Nao aplicavel em termos absolutos; adaptar a comunicacao.",
-        recommendation: RecommendationStrength.STRONG_FOR,
-        evidenceLevel: EvidenceLevel.HIGH
+        recommendation: "STRONG_FOR" as const,
+        evidenceLevel: "HIGH" as const
       }
     ],
     guidelines: [
@@ -449,12 +437,12 @@ const atlasTopics = [
     bodyRegion: "Sistema nervoso central",
     population: "Adultos em fase subaguda ou cronica apos AVC.",
     tags: ["avc", "neuroreabilitacao", "marcha", "equilibrio", "treino orientado a tarefa"],
-    evidenceLevel: EvidenceLevel.HIGH,
-    recommendation: RecommendationStrength.STRONG_FOR,
+    evidenceLevel: "HIGH" as const,
+    recommendation: "STRONG_FOR" as const,
     categorySlug: "neurologia",
     articleRefs: [
-      { sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/28386042/", studyDesign: StudyDesign.META_ANALYSIS, evidenceRole: "mobility" },
-      { sourceUrl: "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD001920.pub3/full", studyDesign: StudyDesign.SYSTEMATIC_REVIEW, evidenceRole: "core-review" }
+      { sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/28386042/", studyDesign: "META_ANALYSIS" as const, evidenceRole: "mobility" },
+      { sourceUrl: "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD001920.pub3/full", studyDesign: "SYSTEMATIC_REVIEW" as const, evidenceRole: "core-review" }
     ],
     clinicalQuestions: [
       {
@@ -464,7 +452,7 @@ const atlasTopics = [
         comparison: "Reabilitacao convencional de menor intensidade",
         outcome: "Marcha, distancia, participacao e independencia",
         answerSummary: "A dose e a especificidade da tarefa importam. Programas com volume maior tendem a melhorar mobilidade funcional.",
-        evidenceLevel: EvidenceLevel.HIGH
+        evidenceLevel: "HIGH" as const
       }
     ],
     outcomes: [
@@ -473,7 +461,7 @@ const atlasTopics = [
         description: "Capacidade de locomocao em ambiente domiciliar e comunitario.",
         measure: "10 Meter Walk Test",
         minimalImportantDifference: "Interpretar pelo estagio de recuperacao.",
-        evidenceLevel: EvidenceLevel.MODERATE
+        evidenceLevel: "MODERATE" as const
       }
     ],
     interventions: [
@@ -483,8 +471,8 @@ const atlasTopics = [
         dosage: "3 a 5 sessoes por semana com alta repeticao.",
         indication: "Limites de mobilidade, transferencias e marcha apos AVC.",
         contraindication: "Instabilidade clinica sem monitoramento adequado.",
-        recommendation: RecommendationStrength.STRONG_FOR,
-        evidenceLevel: EvidenceLevel.HIGH
+        recommendation: "STRONG_FOR" as const,
+        evidenceLevel: "HIGH" as const
       }
     ],
     guidelines: [
@@ -508,12 +496,12 @@ const atlasTopics = [
     bodyRegion: "Sistema respiratorio",
     population: "Adultos com DPOC estavel ou pos-exacerbacao, conforme criterios de seguranca.",
     tags: ["dpoc", "reabilitacao pulmonar", "dispneia", "exercicio aerobico", "forca"],
-    evidenceLevel: EvidenceLevel.HIGH,
-    recommendation: RecommendationStrength.STRONG_FOR,
+    evidenceLevel: "HIGH" as const,
+    recommendation: "STRONG_FOR" as const,
     categorySlug: "cardiorrespiratoria",
     articleRefs: [
-      { sourceUrl: "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD003793.pub3/full", studyDesign: StudyDesign.SYSTEMATIC_REVIEW, evidenceRole: "core-review" },
-      { sourceUrl: "https://www.who.int/publications/i/item/WHO-2019-nCoV-Clinical-2023.2", studyDesign: StudyDesign.GUIDELINE, evidenceRole: "public-guidance" }
+      { sourceUrl: "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD003793.pub3/full", studyDesign: "SYSTEMATIC_REVIEW" as const, evidenceRole: "core-review" },
+      { sourceUrl: "https://www.who.int/publications/i/item/WHO-2019-nCoV-Clinical-2023.2", studyDesign: "GUIDELINE" as const, evidenceRole: "public-guidance" }
     ],
     clinicalQuestions: [
       {
@@ -523,7 +511,7 @@ const atlasTopics = [
         comparison: "Cuidado habitual",
         outcome: "Dispneia, distancia no teste de caminhada, qualidade de vida",
         answerSummary: "Programas com exercicio supervisionado e educacao apresentam ganhos consistentes e clinicamente relevantes.",
-        evidenceLevel: EvidenceLevel.HIGH
+        evidenceLevel: "HIGH" as const
       }
     ],
     outcomes: [
@@ -532,7 +520,7 @@ const atlasTopics = [
         description: "Resposta ao exercicio submaximo.",
         measure: "6 Minute Walk Test",
         minimalImportantDifference: "Usar interpretacao clinica contextualizada.",
-        evidenceLevel: EvidenceLevel.MODERATE
+        evidenceLevel: "MODERATE" as const
       }
     ],
     interventions: [
@@ -542,8 +530,8 @@ const atlasTopics = [
         dosage: "2 a 3 vezes por semana, por 6 a 12 semanas ou mais.",
         indication: "DPOC estavel e pos-exacerbacao elegivel.",
         contraindication: "Instabilidade hemodinamica ou respiratoria sem monitoramento.",
-        recommendation: RecommendationStrength.STRONG_FOR,
-        evidenceLevel: EvidenceLevel.HIGH
+        recommendation: "STRONG_FOR" as const,
+        evidenceLevel: "HIGH" as const
       }
     ],
     guidelines: [
@@ -567,11 +555,11 @@ const atlasTopics = [
     bodyRegion: "Desenvolvimento motor",
     population: "Criancas com paralisia cerebral e alteracoes de mobilidade funcional.",
     tags: ["paralisia cerebral", "funcao motora", "pediatria", "familia", "meta funcional"],
-    evidenceLevel: EvidenceLevel.MODERATE,
-    recommendation: RecommendationStrength.STRONG_FOR,
+    evidenceLevel: "MODERATE" as const,
+    recommendation: "STRONG_FOR" as const,
     categorySlug: "pediatria",
     articleRefs: [
-      { sourceUrl: "https://europepmc.org/article/MED/32005759", studyDesign: StudyDesign.SYSTEMATIC_REVIEW, evidenceRole: "core-review" }
+      { sourceUrl: "https://europepmc.org/article/MED/32005759", studyDesign: "SYSTEMATIC_REVIEW" as const, evidenceRole: "core-review" }
     ],
     clinicalQuestions: [
       {
@@ -581,7 +569,7 @@ const atlasTopics = [
         comparison: "Intervencao nao estruturada ou menor dose",
         outcome: "Funcao motora grossa e participacao",
         answerSummary: "A especificidade das metas e a repeticao com envolvimento da familia aumentam transferencia funcional.",
-        evidenceLevel: EvidenceLevel.MODERATE
+        evidenceLevel: "MODERATE" as const
       }
     ],
     outcomes: [],
@@ -597,12 +585,12 @@ const atlasTopics = [
     bodyRegion: "Mobilidade funcional",
     population: "Idosos da comunidade com risco aumentado de quedas.",
     tags: ["quedas", "idosos", "equilibrio", "forca", "dupla tarefa"],
-    evidenceLevel: EvidenceLevel.HIGH,
-    recommendation: RecommendationStrength.STRONG_FOR,
+    evidenceLevel: "HIGH" as const,
+    recommendation: "STRONG_FOR" as const,
     categorySlug: "geriatria",
     articleRefs: [
-      { sourceUrl: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8092551/", studyDesign: StudyDesign.META_ANALYSIS, evidenceRole: "core-review" },
-      { sourceUrl: "https://pesquisa.bvsalud.org/portal/resource/pt/lil-fall-prevention-2021", studyDesign: StudyDesign.OTHER, evidenceRole: "regional-context" }
+      { sourceUrl: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8092551/", studyDesign: "META_ANALYSIS" as const, evidenceRole: "core-review" },
+      { sourceUrl: "https://pesquisa.bvsalud.org/portal/resource/pt/lil-fall-prevention-2021", studyDesign: "OTHER" as const, evidenceRole: "regional-context" }
     ],
     clinicalQuestions: [],
     outcomes: [],
@@ -618,11 +606,11 @@ const atlasTopics = [
     bodyRegion: "Joelho",
     population: "Atletas em reabilitacao apos reconstrucao do LCA.",
     tags: ["lca", "retorno ao esporte", "hop tests", "forca", "carga"],
-    evidenceLevel: EvidenceLevel.MODERATE,
-    recommendation: RecommendationStrength.STRONG_FOR,
+    evidenceLevel: "MODERATE" as const,
+    recommendation: "STRONG_FOR" as const,
     categorySlug: "esportiva",
     articleRefs: [
-      { sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/27162233/", studyDesign: StudyDesign.CONSENSUS, evidenceRole: "consensus" }
+      { sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/27162233/", studyDesign: "CONSENSUS" as const, evidenceRole: "consensus" }
     ],
     clinicalQuestions: [],
     outcomes: [],
@@ -638,12 +626,12 @@ const atlasTopics = [
     bodyRegion: "Assoalho pelvico",
     population: "Mulheres com incontinencia urinaria de esforco ou mista com predominio de esforco.",
     tags: ["assoalho pelvico", "incontinencia urinaria", "pfmt", "saude da mulher"],
-    evidenceLevel: EvidenceLevel.HIGH,
-    recommendation: RecommendationStrength.STRONG_FOR,
+    evidenceLevel: "HIGH" as const,
+    recommendation: "STRONG_FOR" as const,
     categorySlug: "saude-da-mulher",
     articleRefs: [
-      { sourceUrl: "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD005654.pub4/full", studyDesign: StudyDesign.SYSTEMATIC_REVIEW, evidenceRole: "core-review" },
-      { sourceUrl: "https://www.scielo.br/j/rbfis/a/pelvic-pain-review/", studyDesign: StudyDesign.OTHER, evidenceRole: "regional-review" }
+      { sourceUrl: "https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD005654.pub4/full", studyDesign: "SYSTEMATIC_REVIEW" as const, evidenceRole: "core-review" },
+      { sourceUrl: "https://www.scielo.br/j/rbfis/a/pelvic-pain-review/", studyDesign: "OTHER" as const, evidenceRole: "regional-review" }
     ],
     clinicalQuestions: [],
     outcomes: [],
@@ -659,11 +647,11 @@ const atlasTopics = [
     bodyRegion: "Coluna cervical",
     population: "Adultos com dor cervical mecanica sem sinais de gravidade.",
     tags: ["dor cervical", "terapia manual", "mobilizacao", "exercicio"],
-    evidenceLevel: EvidenceLevel.MODERATE,
-    recommendation: RecommendationStrength.WEAK_FOR,
+    evidenceLevel: "MODERATE" as const,
+    recommendation: "WEAK_FOR" as const,
     categorySlug: "terapia-manual",
     articleRefs: [
-      { sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/27374025/", studyDesign: StudyDesign.SYSTEMATIC_REVIEW, evidenceRole: "manual-therapy" }
+      { sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/27374025/", studyDesign: "SYSTEMATIC_REVIEW" as const, evidenceRole: "manual-therapy" }
     ],
     clinicalQuestions: [],
     outcomes: [],
@@ -867,8 +855,8 @@ const tracks = [
 
 const importLogs = [
   {
-    source: ScientificSource.PUBMED,
-    status: ImportStatus.SUCCESS,
+    source: "PUBMED" as const,
+    status: "SUCCESS" as const,
     query: "low back pain exercise therapy",
     importedCount: 24,
     skippedCount: 6,
@@ -878,8 +866,8 @@ const importLogs = [
     finishedAt: new Date("2026-06-10T10:03:00Z")
   },
   {
-    source: ScientificSource.EUROPE_PMC,
-    status: ImportStatus.SUCCESS,
+    source: "EUROPE_PMC" as const,
+    status: "SUCCESS" as const,
     query: "stroke rehabilitation task oriented training",
     importedCount: 18,
     skippedCount: 2,
@@ -889,8 +877,8 @@ const importLogs = [
     finishedAt: new Date("2026-06-10T11:02:00Z")
   },
   {
-    source: ScientificSource.SCIELO,
-    status: ImportStatus.PARTIAL,
+    source: "SCIELO" as const,
+    status: "PARTIAL" as const,
     query: "dor pelvica fisioterapia",
     importedCount: 7,
     skippedCount: 4,
@@ -900,8 +888,8 @@ const importLogs = [
     finishedAt: new Date("2026-06-11T09:05:00Z")
   },
   {
-    source: ScientificSource.CLINICAL_TRIALS,
-    status: ImportStatus.SUCCESS,
+    source: "CLINICAL_TRIALS" as const,
+    status: "SUCCESS" as const,
     query: "stroke gait high intensity training",
     importedCount: 5,
     skippedCount: 0,
@@ -1208,14 +1196,14 @@ async function main() {
         code: "FISIO-AVC-2026-001",
         qrCodeUrl: "/certificates/FISIO-AVC-2026-001/qr",
         pdfUrl: "/certificates/FISIO-AVC-2026-001.pdf",
-        status: CertificateStatus.ISSUED
+        status: "ISSUED" as const
       },
       update: {
         userId: userMap.get("aluna.demo@fisiobase.academy")!.id,
         trackId: firstTrack.id,
         qrCodeUrl: "/certificates/FISIO-AVC-2026-001/qr",
         pdfUrl: "/certificates/FISIO-AVC-2026-001.pdf",
-        status: CertificateStatus.ISSUED
+        status: "ISSUED" as const
       }
     });
   }
