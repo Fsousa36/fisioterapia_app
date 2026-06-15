@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { BookOpen, Compass, GraduationCap, LayoutDashboard, ScrollText, Tags, Users } from "lucide-react";
+import { BookOpen, Compass, Database, GraduationCap, LayoutDashboard, ScrollText, Tags, Users } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/atlas", label: "Atlas", icon: Compass },
   { href: "/articles", label: "Artigos", icon: BookOpen },
+  { href: "/imports", label: "Importacoes", icon: Database },
   { href: "/tracks", label: "Trilhas", icon: GraduationCap },
   { href: "/categories", label: "Categorias", icon: Tags },
   { href: "/users", label: "Usuarios", icon: Users },

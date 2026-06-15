@@ -191,7 +191,25 @@ export class AdminService {
 
   listTracks() {
     return this.prisma.learningTrack.findMany({
-      include: { category: true, modules: true },
+      include: {
+        category: true,
+        modules: {
+          include: {
+            lessons: {
+              include: {
+                quizzes: true,
+                articles: true
+              }
+            }
+          }
+        },
+        _count: {
+          select: {
+            modules: true,
+            certificates: true
+          }
+        }
+      },
       orderBy: { createdAt: "desc" }
     });
   }
@@ -249,5 +267,67 @@ export class AdminService {
       where: { id },
       data: { status: "REVOKED" }
     });
+  }
+
+  listImportLogs() {
+    return this.prisma.importLog.findMany({
+      orderBy: [{ startedAt: "desc" }],
+      take: 100
+    });
+  }
+
+  async dashboard() {
+    const [
+      publishedTracks,
+      premiumUsers,
+      pendingArticles,
+      certificatesIssued,
+      categories,
+      imports,
+      atlasTopics,
+      articlesBySource
+    ] = await Promise.all([
+      this.prisma.learningTrack.count({ where: { publishedAt: { not: null } } }),
+      this.prisma.user.count({ where: { subscription: "PREMIUM" } }),
+      this.prisma.article.count({ where: { status: { in: ["DRAFT", "IN_REVIEW"] } } }),
+      this.prisma.certificate.count({ where: { status: "ISSUED" } }),
+      this.prisma.category.findMany({
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          _count: { select: { articles: true, tracks: true, atlasTopics: true } }
+        },
+        orderBy: { name: "asc" }
+      }),
+      this.prisma.importLog.findMany({
+        orderBy: { startedAt: "desc" },
+        take: 8
+      }),
+      this.prisma.atlasTopic.count(),
+      this.prisma.article.groupBy({
+        by: ["source"],
+        _count: { _all: true },
+        orderBy: { _count: { source: "desc" } }
+      })
+    ]);
+
+    return {
+      pendingArticles,
+      publishedTracks,
+      certificatesIssued,
+      premiumUsers,
+      atlasTopics,
+      articlesBySource: articlesBySource.map((item) => ({ source: item.source, count: item._count._all })),
+      categories: categories.map((item) => ({
+        id: item.id,
+        name: item.name,
+        slug: item.slug,
+        articleCount: item._count.articles,
+        trackCount: item._count.tracks,
+        atlasTopicCount: item._count.atlasTopics
+      })),
+      imports
+    };
   }
 }

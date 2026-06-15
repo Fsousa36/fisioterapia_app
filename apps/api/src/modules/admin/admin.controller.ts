@@ -5,6 +5,11 @@ import { AdminService } from "./admin.service";
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  @Get("dashboard")
+  dashboard() {
+    return this.adminService.dashboard();
+  }
+
   @Get("users")
   users() {
     return this.adminService.listUsers();
@@ -93,5 +98,10 @@ export class AdminController {
   @Patch("certificates/:id/revoke")
   revokeCertificate(@Param("id") id: string) {
     return this.adminService.revokeCertificate(id);
+  }
+
+  @Get("import-logs")
+  importLogs() {
+    return this.adminService.listImportLogs();
   }
 }

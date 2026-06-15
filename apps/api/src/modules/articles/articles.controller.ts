@@ -10,8 +10,13 @@ export class ArticlesController {
   ) {}
 
   @Get()
-  list(@Query("q") query?: string) {
-    return this.articlesService.listPublished(query);
+  list(@Query("q") query?: string, @Query("source") source?: string, @Query("category") category?: string) {
+    return this.articlesService.listPublished(query, source, category);
+  }
+
+  @Get("meta/summary")
+  summary() {
+    return this.articlesService.summary();
   }
 
   @Get(":id")
