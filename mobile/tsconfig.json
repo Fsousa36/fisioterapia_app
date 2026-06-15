@@ -3,10 +3,9 @@
   "compilerOptions": {
     "strict": true,
     "baseUrl": ".",
-    "typeRoots": ["./node_modules/@types"],
     "paths": {
       "@/*": ["./*"],
-      "@fisiobase/types": ["../../packages/types/src/index.ts"]
+      "@fisiobase/types": ["../packages/types/src/index.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]

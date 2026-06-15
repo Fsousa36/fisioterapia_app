@@ -16,6 +16,9 @@ RUN pnpm --filter @fisiobase/types build
 
 # ---- Build web ----
 FROM build-types AS build-web
+ENV API_INTERNAL_URL=http://api:3333
+ENV NEXT_PUBLIC_API_URL=/api
+ENV NEXT_STANDALONE=true
 COPY apps/web apps/web
 RUN pnpm --filter @fisiobase/web build
 

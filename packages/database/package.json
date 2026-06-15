@@ -8,7 +8,7 @@
   "exports": {
     ".": {
       "import": "./dist/client.js",
-      "require": "./dist/client.cjs",
+      "require": "./dist/client.js",
       "types": "./dist/client.d.ts"
     }
   },
@@ -29,13 +29,9 @@
     "@prisma/client": "^6.1.0"
   },
   "devDependencies": {
+    "@types/node": "^22.10.2",
     "prisma": "^6.1.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }
-  "scripts": {
-  "build": "nest build",
-  "start": "nest start",
-  "start:prod": "node dist/main.js"
-}
 }

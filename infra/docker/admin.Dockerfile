@@ -10,6 +10,9 @@ RUN pnpm install --frozen-lockfile=false
 
 # ---- Build admin ----
 FROM deps AS build-admin
+ENV API_INTERNAL_URL=http://api:3333
+ENV NEXT_PUBLIC_API_URL=/api
+ENV NEXT_STANDALONE=true
 COPY apps/admin apps/admin
 RUN pnpm --filter @fisiobase/admin build
 

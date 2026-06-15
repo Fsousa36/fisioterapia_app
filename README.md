@@ -4,7 +4,7 @@ Plataforma mobile para estudantes e profissionais de fisioterapia baseada em evi
 
 ## Arquitetura
 
-- `apps/mobile`: aplicativo React Native com Expo Router, Zustand e React Query.
+- `mobile`: aplicativo React Native com Expo Router, Zustand e React Query, separado do workspace web/API.
 - `apps/web`: app web publico Next.js para biblioteca, trilhas, premium e estudo no navegador.
 - `apps/api`: backend NestJS com Prisma, PostgreSQL, Redis, BullMQ e Swagger.
 - `apps/admin`: painel administrativo Next.js com Tailwind, ShadCN UI e React Query.
@@ -24,13 +24,23 @@ pnpm db:seed
 pnpm dev
 ```
 
+## Mobile
+
+O app Expo fica em uma pasta separada para evitar conflito entre React 18 (mobile) e React 19 (Next.js).
+
+```bash
+pnpm --dir mobile install
+pnpm mobile:dev
+pnpm mobile:build
+```
+
 ## Portas locais
 
 - API: `http://localhost:3333`
 - Swagger: `http://localhost:3333/docs`
 - Admin: `http://localhost:3000`
 - Web: `http://localhost:3001`
-- Mobile Expo: `npx pnpm --filter @fisiobase/mobile dev`
+- Mobile Expo: `pnpm mobile:dev`
 - Meilisearch: `http://localhost:7700`
 
 ## Regras editoriais
@@ -43,7 +53,7 @@ pnpm dev
 ## Visualizar o mobile
 
 ```bash
-npx pnpm --filter @fisiobase/mobile dev
+pnpm mobile:dev
 ```
 
 Depois:

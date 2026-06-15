@@ -1,7 +1,13 @@
-export const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333";
+const publicApiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "/api";
+const serverApiBaseUrl =
+  process.env.API_INTERNAL_URL ?? (publicApiBaseUrl.startsWith("http") ? publicApiBaseUrl : "http://localhost:3333");
+
+export function getApiBaseUrl() {
+  return typeof window === "undefined" ? serverApiBaseUrl : publicApiBaseUrl;
+}
 
 export async function apiGet<T>(path: string): Promise<T> {
-  const response = await fetch(`${apiBaseUrl}${path}`, {
+  const response = await fetch(`${getApiBaseUrl()}${path}`, {
     next: { revalidate: 60 }
   });
 
