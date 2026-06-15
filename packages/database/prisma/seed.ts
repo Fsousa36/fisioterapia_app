@@ -4,6 +4,10 @@ const { PrismaClient } = prismaModule;
 
 const prisma = new PrismaClient();
 
+function atlasCoverImage(slug: string) {
+  return `https://picsum.photos/seed/${slug}/1200/720`;
+}
+
 const categories = [
   {
     name: "Ortopedia",
@@ -985,6 +989,7 @@ async function main() {
         title: topic.title,
         slug: topic.slug,
         summary: topic.summary,
+        coverImageUrl: atlasCoverImage(topic.slug),
         clinicalArea: topic.clinicalArea,
         bodyRegion: topic.bodyRegion,
         population: topic.population,
@@ -997,6 +1002,7 @@ async function main() {
       update: {
         title: topic.title,
         summary: topic.summary,
+        coverImageUrl: atlasCoverImage(topic.slug),
         clinicalArea: topic.clinicalArea,
         bodyRegion: topic.bodyRegion,
         population: topic.population,

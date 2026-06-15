@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, Image, StyleSheet, View } from "react-native";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Chip, Searchbar, Text } from "react-native-paper";
@@ -13,6 +13,7 @@ type AtlasTopic = {
   clinicalArea: string;
   bodyRegion: string | null;
   population: string | null;
+  coverImageUrl?: string | null;
   tags: string[];
   evidenceLevel: string;
   recommendation: string;
@@ -66,6 +67,10 @@ export default function AtlasScreen() {
         contentContainerStyle={styles.list}
         renderItem={({ item }) => (
           <View style={styles.card}>
+            <Image
+              source={{ uri: item.coverImageUrl ?? `https://picsum.photos/seed/${item.slug}/800/480` }}
+              style={styles.image}
+            />
             <View style={styles.chips}>
               <Chip compact>{item.clinicalArea}</Chip>
               <Chip compact>{item.evidenceLevel}</Chip>
@@ -120,6 +125,12 @@ const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderColor: "#e2e8f0"
+  },
+  image: {
+    width: "100%",
+    height: 160,
+    borderRadius: 8,
+    backgroundColor: "#e2e8f0"
   },
   chips: {
     flexDirection: "row",

@@ -153,6 +153,7 @@ model AtlasTopic {
   title            String
   slug             String              @unique
   summary          String
+  coverImageUrl    String?
   clinicalArea     String
   bodyRegion       String?
   population       String?

@@ -5,10 +5,10 @@ import { PrismaService } from "../prisma/prisma.service";
 export class ArticlesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  listPublished(query?: string, source?: string, categorySlug?: string) {
+  listPublished(query?: string, source?: string, categorySlug?: string, status?: string) {
     return this.prisma.article.findMany({
       where: {
-        status: "PUBLISHED",
+        status: (status ?? "PUBLISHED") as never,
         ...(source ? { source: source as never } : {}),
         ...(categorySlug ? { category: { slug: categorySlug } } : {}),
         ...(query

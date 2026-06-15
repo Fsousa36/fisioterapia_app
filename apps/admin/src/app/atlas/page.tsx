@@ -27,7 +27,8 @@ const fields: CrudField[] = [
   { name: "tags", label: "Tags separadas por virgula" },
   { name: "evidenceLevel", label: "Nivel de evidencia", type: "select", options: evidenceOptions },
   { name: "recommendation", label: "Recomendacao", type: "select", options: recommendationOptions },
-  { name: "summary", label: "Resumo clinico", type: "textarea", required: true }
+  { name: "summary", label: "Resumo clinico", type: "textarea", required: true },
+  { name: "coverImageUrl", label: "Imagem de capa" }
 ];
 
 export default function AtlasAdminPage() {
@@ -44,6 +45,7 @@ export default function AtlasAdminPage() {
           { key: "clinicalArea", label: "Area" },
           { key: "evidenceLevel", label: "Evidencia" },
           { key: "recommendation", label: "Recomendacao" },
+          { key: "coverImageUrl", label: "Imagem", render: (row) => (row.coverImageUrl ? "Sim" : "Nao") },
           {
             key: "_count",
             label: "Conteudo",

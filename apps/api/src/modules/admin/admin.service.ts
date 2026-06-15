@@ -119,8 +119,22 @@ export class AdminService {
     return this.prisma.category.delete({ where: { id }, select: { id: true } });
   }
 
-  listArticles() {
+  listArticles(status?: string, query?: string) {
     return this.prisma.article.findMany({
+      where: {
+        ...(status ? { status: status as never } : {}),
+        ...(query
+          ? {
+              OR: [
+                { title: { contains: query, mode: "insensitive" } },
+                { abstract: { contains: query, mode: "insensitive" } },
+                { doi: { contains: query, mode: "insensitive" } },
+                { pmid: { contains: query, mode: "insensitive" } },
+                { pmcid: { contains: query, mode: "insensitive" } }
+              ]
+            }
+          : {})
+      },
       include: { category: true },
       orderBy: { createdAt: "desc" }
     });

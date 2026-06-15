@@ -105,6 +105,7 @@ export class AtlasService {
         title,
         slug: optionalText(body.slug) ?? slugify(title),
         summary,
+        coverImageUrl: optionalText(body.coverImageUrl),
         clinicalArea,
         bodyRegion: optionalText(body.bodyRegion),
         population: optionalText(body.population),
@@ -112,7 +113,7 @@ export class AtlasService {
         evidenceLevel: text(body.evidenceLevel, "LOW") as never,
         recommendation: text(body.recommendation, "UNCERTAIN") as never,
         categoryId: optionalText(body.categoryId)
-      }
+      } as never
     });
   }
 
@@ -123,6 +124,7 @@ export class AtlasService {
         title: optionalText(body.title),
         slug: optionalText(body.slug),
         summary: optionalText(body.summary),
+        coverImageUrl: optionalText(body.coverImageUrl),
         clinicalArea: optionalText(body.clinicalArea),
         bodyRegion: optionalText(body.bodyRegion),
         population: optionalText(body.population),
@@ -131,7 +133,7 @@ export class AtlasService {
         recommendation: optionalText(body.recommendation) as never,
         categoryId: optionalText(body.categoryId),
         lastReviewedAt: body.lastReviewedAt ? new Date(text(body.lastReviewedAt)) : undefined
-      }
+      } as never
     });
   }
 

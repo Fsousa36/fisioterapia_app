@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from "@nestjs/common";
 import { AdminService } from "./admin.service";
 
 @Controller("admin")
@@ -51,8 +51,8 @@ export class AdminController {
   }
 
   @Get("articles")
-  articles() {
-    return this.adminService.listArticles();
+  articles(@Query("status") status?: string, @Query("q") query?: string) {
+    return this.adminService.listArticles(status, query);
   }
 
   @Post("articles")

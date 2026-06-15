@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ArrowLeft, BookOpenCheck } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/card";
 import { apiGet } from "@/lib/api";
@@ -8,6 +10,7 @@ type AtlasDetail = {
   clinicalArea: string;
   bodyRegion: string | null;
   population: string | null;
+  coverImageUrl: string | null;
   tags: string[];
   evidenceLevel: string;
   recommendation: string;
@@ -32,6 +35,18 @@ type AtlasDetail = {
     recommendation: string;
   }>;
   guidelines: Array<{ id: string; title: string; organization: string; url: string; year: number | null }>;
+  articles: Array<{
+    article: {
+      id: string;
+      title: string;
+      source: string;
+      sourceUrl: string;
+      doi: string | null;
+      pmid: string | null;
+      pmcid: string | null;
+      license: string | null;
+    };
+  }>;
 };
 
 export default async function AtlasDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -48,17 +63,57 @@ export default async function AtlasDetailPage({ params }: { params: Promise<{ sl
 
   return (
     <AppShell>
-      <div className="mb-6">
-        <div className="mb-2 flex flex-wrap gap-2 text-xs">
-          <span className="rounded-md bg-teal-50 px-2 py-1 text-primary">{topic.clinicalArea}</span>
-          <span className="rounded-md bg-blue-50 px-2 py-1 text-accent">{topic.evidenceLevel}</span>
-          <span className="rounded-md bg-slate-100 px-2 py-1">{topic.recommendation}</span>
-        </div>
-        <h1 className="text-3xl font-semibold">{topic.title}</h1>
-        <p className="mt-3 max-w-4xl text-slate-700">{topic.summary}</p>
+      <div className="mb-5">
+        <Link href="/atlas" className="inline-flex items-center gap-2 text-sm text-muted hover:text-primary">
+          <ArrowLeft className="h-4 w-4" />
+          Voltar ao atlas
+        </Link>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1.4fr_0.6fr]">
+      <Card className="overflow-hidden p-0">
+        <div className="grid gap-0 lg:grid-cols-[1fr_0.8fr]">
+          <div className="relative min-h-72">
+            <img
+              alt={topic.title}
+              className="h-full w-full object-cover"
+              src={topic.coverImageUrl ?? `https://picsum.photos/seed/${slug}/1200/720`}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-6 text-white">
+              <div className="mb-2 flex flex-wrap gap-2 text-xs">
+                <span className="rounded-md bg-white/15 px-2 py-1">{topic.clinicalArea}</span>
+                <span className="rounded-md bg-white/15 px-2 py-1">{topic.evidenceLevel}</span>
+                <span className="rounded-md bg-white/15 px-2 py-1">{topic.recommendation}</span>
+              </div>
+              <h1 className="text-3xl font-semibold">{topic.title}</h1>
+              <p className="mt-3 max-w-3xl text-sm text-white/85">{topic.summary}</p>
+            </div>
+          </div>
+
+          <div className="space-y-4 p-5">
+            <div>
+              <div className="mb-2 flex items-center gap-2 text-sm font-medium text-primary">
+                <BookOpenCheck className="h-4 w-4" />
+                Resumo do topico
+              </div>
+              <p className="text-sm text-slate-700">{topic.summary}</p>
+            </div>
+            <div className="grid gap-2 text-sm sm:grid-cols-2">
+              <Info label="Regiao" value={topic.bodyRegion ?? "Nao definida"} />
+              <Info label="Populacao" value={topic.population ?? "Nao definida"} />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {topic.tags.map((tag) => (
+                <span key={tag} className="rounded-md border border-border px-2 py-1 text-xs text-slate-600">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <div className="mt-6 grid gap-4 lg:grid-cols-[1.4fr_0.6fr]">
         <section className="space-y-4">
           <Card>
             <h2 className="mb-4 text-lg font-semibold">Perguntas PICO</h2>
@@ -87,8 +142,32 @@ export default async function AtlasDetailPage({ params }: { params: Promise<{ sl
                   <div className="font-medium">{item.name}</div>
                   <p className="mt-1 text-slate-700">{item.description}</p>
                   <div className="mt-2 text-muted">Dose: {item.dosage ?? "Nao definida"}</div>
+                  <div className="mt-1 text-muted">Indicacao: {item.indication ?? "Nao definida"}</div>
                 </div>
               ))}
+            </div>
+          </Card>
+
+          <Card>
+            <h2 className="mb-4 text-lg font-semibold">Fontes vinculadas</h2>
+            <div className="space-y-3">
+              {topic.articles.map((item) => (
+                <a
+                  key={item.article.id}
+                  href={item.article.sourceUrl}
+                  className="block rounded-md border border-border p-3 transition-colors hover:border-primary"
+                >
+                  <div className="text-sm font-medium">{item.article.title}</div>
+                  <div className="mt-1 text-xs text-muted">
+                    {item.article.source}
+                    {item.article.doi ? ` · DOI ${item.article.doi}` : ""}
+                    {item.article.pmid ? ` · PMID ${item.article.pmid}` : ""}
+                    {item.article.pmcid ? ` · PMCID ${item.article.pmcid}` : ""}
+                  </div>
+                  {item.article.license ? <div className="mt-1 text-xs text-muted">{item.article.license}</div> : null}
+                </a>
+              ))}
+              {topic.articles.length === 0 ? <p className="text-sm text-muted">Sem artigos vinculados.</p> : null}
             </div>
           </Card>
         </section>
