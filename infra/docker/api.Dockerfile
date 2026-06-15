@@ -41,8 +41,8 @@ COPY --from=build-api /app/packages/database/node_modules/.prisma /app/packages/
 COPY --from=build-api /app/apps/api/dist /app/apps/api/dist
 COPY --from=build-api /app/apps/api/package.json /app/apps/api/package.json
 
-# Copy node_modules from deps (flattened hoisted)
-COPY --from=deps /app/node_modules /app/node_modules
+# Copy node_modules from the build stage after Prisma Client generation
+COPY --from=build-api /app/node_modules /app/node_modules
 COPY --from=deps /app/pnpm-lock.yaml /app/pnpm-lock.yaml
 
 WORKDIR /app/apps/api
