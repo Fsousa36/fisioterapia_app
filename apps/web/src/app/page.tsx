@@ -21,6 +21,7 @@ type ArticleItem = {
   source: string;
   doi: string | null;
   pmid: string | null;
+  editorialSummaryPt: string | null;
   category: { name: string } | null;
 };
 
@@ -31,7 +32,7 @@ type TrackItem = {
   description: string;
   estimatedMinutes: number;
   isPremium: boolean;
-  category: { name: string };
+  category: { name: string; slug: string };
   _count: {
     modules: number;
     certificates: number;
@@ -57,16 +58,37 @@ type AtlasItem = {
   };
 };
 
-function queryPath(path: string, q: string) {
-  return q ? `${path}?q=${encodeURIComponent(q)}` : path;
+const sourceFilters = [
+  { label: "PubMed", value: "PUBMED" },
+  { label: "Europe PMC", value: "EUROPE_PMC" },
+  { label: "SciELO", value: "SCIELO" },
+  { label: "LILACS", value: "LILACS" },
+  { label: "Cochrane", value: "COCHRANE" },
+  { label: "WHO", value: "WHO" }
+];
+
+function buildQueryPath(path: string, params: Record<string, string | undefined>) {
+  const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value) search.set(key, value);
+  }
+  return search.toString() ? `${path}?${search.toString()}` : path;
 }
 
-async function getData(q: string) {
+function buildHomeHref(params: { q?: string; category?: string; source?: string }) {
+  const search = new URLSearchParams();
+  if (params.q) search.set("q", params.q);
+  if (params.category) search.set("category", params.category);
+  if (params.source) search.set("source", params.source);
+  return search.toString() ? `/?${search.toString()}` : "/";
+}
+
+async function getData(q: string, category: string, source: string) {
   const [categories, articles, tracks, atlas] = await Promise.all([
     apiGet<CategoryItem[]>("/learning/categories").catch(() => []),
-    apiGet<ArticleItem[]>(queryPath("/articles", q)).catch(() => []),
+    apiGet<ArticleItem[]>(buildQueryPath("/articles", { q, category, source })).catch(() => []),
     apiGet<TrackItem[]>("/learning/tracks").catch(() => []),
-    apiGet<AtlasItem[]>(queryPath("/atlas", q)).catch(() => [])
+    apiGet<AtlasItem[]>(buildQueryPath("/atlas", { q, category })).catch(() => [])
   ]);
 
   return { categories, articles, tracks, atlas };
@@ -75,20 +97,29 @@ async function getData(q: string) {
 export default async function WebHome({
   searchParams
 }: {
-  searchParams?: Promise<{ q?: string }>;
+  searchParams?: Promise<{ q?: string; category?: string; source?: string }>;
 }) {
   const params = (await searchParams) ?? {};
   const q = typeof params.q === "string" ? params.q.trim() : "";
-  const { categories, articles, tracks, atlas } = await getData(q);
+  const category = typeof params.category === "string" ? params.category.trim() : "";
+  const source = typeof params.source === "string" ? params.source.trim() : "";
+  const { categories, articles, tracks, atlas } = await getData(q, category, source);
   const totalStudyHours = Math.round(tracks.reduce((total, track) => total + track.estimatedMinutes, 0) / 60);
   const featuredAtlas = atlas[0] ?? null;
-  const featuredTrack = tracks[0] ?? null;
 
   const filteredTracks = q
     ? tracks.filter((track) =>
-        [track.title, track.description, track.category.name, track.slug].join(" ").toLowerCase().includes(q.toLowerCase())
+        [track.title, track.description, track.category.name, track.category.slug, track.slug]
+          .join(" ")
+          .toLowerCase()
+          .includes(q.toLowerCase())
       )
     : tracks;
+  const filteredTracksByCategory = category
+    ? filteredTracks.filter((track) => track.category.slug === category)
+    : filteredTracks;
+  const featuredTrack = filteredTracksByCategory[0] ?? null;
+  const categoryLabel = categories.find((item) => item.slug === category)?.name ?? "";
 
   return (
     <AppShell>
@@ -110,6 +141,8 @@ export default async function WebHome({
                 </p>
               </div>
               <form className="flex max-w-2xl gap-2" method="get" action="/">
+                {category ? <input type="hidden" name="category" value={category} /> : null}
+                {source ? <input type="hidden" name="source" value={source} /> : null}
                 <input
                   className="h-11 flex-1 rounded-md border border-border bg-white px-3 text-sm outline-none focus:border-primary"
                   placeholder="Buscar por tema, DOI, PMID, especialidade ou tag"
@@ -122,10 +155,42 @@ export default async function WebHome({
               </form>
               <div className="flex flex-wrap gap-2">
                 {categories.map((category) => (
-                  <span key={category.id} className="rounded-md border border-border bg-slate-50 px-3 py-2 text-sm">
+                  <Link
+                    key={category.id}
+                    href={buildHomeHref({ q, category: category.slug, source })}
+                    className={`rounded-md border px-3 py-2 text-sm transition-colors ${
+                      params.category === category.slug
+                        ? "border-primary bg-teal-50 text-primary"
+                        : "border-border bg-slate-50"
+                    }`}
+                  >
                     {category.name}
-                  </span>
+                  </Link>
                 ))}
+              </div>
+              <div className="space-y-2">
+                <div className="text-xs font-medium uppercase tracking-wide text-muted">Fontes</div>
+                <div className="flex flex-wrap gap-2">
+                  <Link
+                    href={buildHomeHref({ q, category })}
+                    className={`rounded-md border px-3 py-2 text-sm ${
+                      source ? "border-border bg-white" : "border-primary bg-teal-50 text-primary"
+                    }`}
+                  >
+                    Todas
+                  </Link>
+                  {sourceFilters.map((item) => (
+                    <Link
+                      key={item.value}
+                      href={buildHomeHref({ q, category, source: item.value })}
+                      className={`rounded-md border px-3 py-2 text-sm ${
+                        source === item.value ? "border-primary bg-teal-50 text-primary" : "border-border bg-white"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -192,12 +257,17 @@ export default async function WebHome({
           </div>
           <div className="space-y-3">
             {articles.slice(0, 6).map((article) => (
-              <div key={article.id} className="rounded-md border border-border p-3">
+              <Link
+                key={article.id}
+                href={`/artigos/${article.id}`}
+                className="block rounded-md border border-border p-3 transition-colors hover:border-primary"
+              >
                 <div className="text-sm font-medium">{article.title}</div>
                 <div className="mt-1 text-xs text-muted">
                   {article.source} · {article.category?.name ?? "Sem categoria"} · {article.doi ?? article.pmid ?? "Sem identificador"}
                 </div>
-              </div>
+                {article.editorialSummaryPt ? <p className="mt-2 text-sm text-slate-700">{article.editorialSummaryPt}</p> : null}
+              </Link>
             ))}
             {articles.length === 0 ? <div className="py-4 text-sm text-muted">Nenhum artigo encontrado para este filtro.</div> : null}
           </div>
@@ -209,7 +279,7 @@ export default async function WebHome({
             Trilhas em destaque
           </div>
           <div className="space-y-3">
-            {filteredTracks.slice(0, 5).map((track) => (
+            {filteredTracksByCategory.slice(0, 5).map((track) => (
               <Link key={track.id} href="/trilhas" className="block rounded-md border border-border p-3">
                 <div className="text-sm font-medium">{track.title}</div>
                 <div className="mt-1 text-xs text-muted">
@@ -217,7 +287,7 @@ export default async function WebHome({
                 </div>
               </Link>
             ))}
-            {filteredTracks.length === 0 ? <div className="py-4 text-sm text-muted">Nenhuma trilha encontrada.</div> : null}
+            {filteredTracksByCategory.length === 0 ? <div className="py-4 text-sm text-muted">Nenhuma trilha encontrada.</div> : null}
           </div>
         </Card>
       </section>
@@ -272,6 +342,16 @@ export default async function WebHome({
       {q ? (
         <div className="mt-6 text-sm text-muted">
           Resultados filtrados para <span className="font-medium text-slate-700">{q}</span>.
+        </div>
+      ) : null}
+      {category ? (
+        <div className="mt-2 text-sm text-muted">
+          Categoria ativa: <span className="font-medium text-slate-700">{categoryLabel || category}</span>.
+        </div>
+      ) : null}
+      {source ? (
+        <div className="mt-2 text-sm text-muted">
+          Fonte ativa: <span className="font-medium text-slate-700">{source}</span>.
         </div>
       ) : null}
       {featuredTrack ? (

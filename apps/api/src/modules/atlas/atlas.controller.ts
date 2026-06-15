@@ -6,8 +6,8 @@ export class AtlasController {
   constructor(private readonly atlasService: AtlasService) {}
 
   @Get()
-  list(@Query("q") query?: string, @Query("area") area?: string) {
-    return this.atlasService.list(query, area);
+  list(@Query("q") query?: string, @Query("area") area?: string, @Query("category") category?: string) {
+    return this.atlasService.list(query, area, category);
   }
 
   @Get("facets")

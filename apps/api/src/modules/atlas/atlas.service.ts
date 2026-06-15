@@ -17,6 +17,17 @@ function tags(value: unknown) {
     .filter(Boolean);
 }
 
+function csvList(value: unknown) {
+  if (Array.isArray(value)) {
+    return value.map((item) => text(item)).filter(Boolean);
+  }
+
+  return text(value)
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function slugify(value: string) {
   return value
     .normalize("NFD")
@@ -30,7 +41,7 @@ function slugify(value: string) {
 export class AtlasService {
   constructor(private readonly prisma: PrismaService) {}
 
-  list(query?: string, area?: string) {
+  list(query?: string, area?: string, categorySlug?: string) {
     return this.prisma.atlasTopic.findMany({
       where: {
         ...(query
@@ -38,11 +49,15 @@ export class AtlasService {
               OR: [
                 { title: { contains: query, mode: "insensitive" } },
                 { summary: { contains: query, mode: "insensitive" } },
+                { clinicalArea: { contains: query, mode: "insensitive" } },
+                { bodyRegion: { contains: query, mode: "insensitive" } },
+                { population: { contains: query, mode: "insensitive" } },
                 { tags: { has: query } }
               ]
             }
           : {}),
-        ...(area ? { clinicalArea: { equals: area, mode: "insensitive" } } : {})
+        ...(area ? { clinicalArea: { equals: area, mode: "insensitive" } } : {}),
+        ...(categorySlug ? { category: { slug: categorySlug } } : {})
       },
       include: {
         category: true,
@@ -106,6 +121,7 @@ export class AtlasService {
         slug: optionalText(body.slug) ?? slugify(title),
         summary,
         coverImageUrl: optionalText(body.coverImageUrl),
+        illustrationUrls: csvList(body.illustrationUrls),
         clinicalArea,
         bodyRegion: optionalText(body.bodyRegion),
         population: optionalText(body.population),
@@ -125,6 +141,7 @@ export class AtlasService {
         slug: optionalText(body.slug),
         summary: optionalText(body.summary),
         coverImageUrl: optionalText(body.coverImageUrl),
+        illustrationUrls: body.illustrationUrls === undefined ? undefined : csvList(body.illustrationUrls),
         clinicalArea: optionalText(body.clinicalArea),
         bodyRegion: optionalText(body.bodyRegion),
         population: optionalText(body.population),

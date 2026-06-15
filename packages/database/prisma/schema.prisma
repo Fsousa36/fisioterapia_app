@@ -119,6 +119,7 @@ model Article {
   id              String           @id @default(cuid())
   title           String
   abstract        String?
+  editorialSummaryPt String?
   authors         String[]
   journal         String?
   publicationDate DateTime?
@@ -154,6 +155,7 @@ model AtlasTopic {
   slug             String              @unique
   summary          String
   coverImageUrl    String?
+  illustrationUrls String[]
   clinicalArea     String
   bodyRegion       String?
   population       String?

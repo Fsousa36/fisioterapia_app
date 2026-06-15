@@ -28,7 +28,8 @@ const fields: CrudField[] = [
   { name: "evidenceLevel", label: "Nivel de evidencia", type: "select", options: evidenceOptions },
   { name: "recommendation", label: "Recomendacao", type: "select", options: recommendationOptions },
   { name: "summary", label: "Resumo clinico", type: "textarea", required: true },
-  { name: "coverImageUrl", label: "Imagem de capa" }
+  { name: "coverImageUrl", label: "Imagem de capa" },
+  { name: "illustrationUrls", label: "Imagens separadas por virgula" }
 ];
 
 export default function AtlasAdminPage() {

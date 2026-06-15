@@ -16,6 +16,10 @@ export class ArticlesService {
               OR: [
                 { title: { contains: query, mode: "insensitive" } },
                 { abstract: { contains: query, mode: "insensitive" } },
+                { editorialSummaryPt: { contains: query, mode: "insensitive" } },
+                { journal: { contains: query, mode: "insensitive" } },
+                { license: { contains: query, mode: "insensitive" } },
+                { sourceUrl: { contains: query, mode: "insensitive" } },
                 { doi: { contains: query, mode: "insensitive" } },
                 { pmid: { contains: query, mode: "insensitive" } },
                 { pmcid: { contains: query, mode: "insensitive" } },
@@ -33,7 +37,14 @@ export class ArticlesService {
   detail(id: string) {
     return this.prisma.article.findUnique({
       where: { id },
-      include: { category: true }
+      include: {
+        category: true,
+        atlasLinks: {
+          include: {
+            atlasTopic: true
+          }
+        }
+      }
     });
   }
 

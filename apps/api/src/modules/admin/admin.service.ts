@@ -128,6 +128,9 @@ export class AdminService {
               OR: [
                 { title: { contains: query, mode: "insensitive" } },
                 { abstract: { contains: query, mode: "insensitive" } },
+                { editorialSummaryPt: { contains: query, mode: "insensitive" } },
+                { license: { contains: query, mode: "insensitive" } },
+                { sourceUrl: { contains: query, mode: "insensitive" } },
                 { doi: { contains: query, mode: "insensitive" } },
                 { pmid: { contains: query, mode: "insensitive" } },
                 { pmcid: { contains: query, mode: "insensitive" } }
@@ -152,6 +155,7 @@ export class AdminService {
       data: {
         title,
         abstract: optionalText(body.abstract),
+        editorialSummaryPt: optionalText(body.editorialSummaryPt),
         authors: text(body.authors)
           .split(",")
           .map((author) => author.trim())
@@ -177,6 +181,7 @@ export class AdminService {
       data: {
         title: optionalText(body.title),
         abstract: optionalText(body.abstract),
+        editorialSummaryPt: optionalText(body.editorialSummaryPt),
         authors:
           typeof body.authors === "string"
             ? body.authors

@@ -8,6 +8,51 @@ function atlasCoverImage(slug: string) {
   return `https://picsum.photos/seed/${slug}/1200/720`;
 }
 
+function atlasIllustrations(slug: string) {
+  return [
+    atlasCoverImage(slug),
+    `https://picsum.photos/seed/${slug}-detail-a/1200/720`,
+    `https://picsum.photos/seed/${slug}-detail-b/1200/720`
+  ];
+}
+
+function editorialSummaryPt(title: string) {
+  switch (title) {
+    case "Exercise therapy for chronic non-specific low back pain":
+      return "Revisao que reforca o exercicio progressivo como eixo central para reduzir dor e incapacidade na lombalgia cronica inespecifica, com foco em aderencia, tolerancia e metas funcionais.";
+    case "Clinical practice guideline interventions for acute and chronic low back pain":
+      return "Diretriz que favorece educacao, movimento e estrategias nao farmacologicas, reservando abordagens passivas para papel adjuvante e contextualizado.";
+    case "Task-oriented circuit class training after stroke":
+      return "Evidencia de melhora funcional com treino orientado a tarefa, maior volume de pratica e atividades repetidas voltadas a marcha, mobilidade e participacao.";
+    case "Physical rehabilitation approaches for people with stroke":
+      return "Revisao que sustenta reabilitacao intensiva, especifica e progressiva apos AVC, com monitoramento de desfechos e adaptacao ao estagio clinico.";
+    case "Pulmonary rehabilitation for chronic obstructive pulmonary disease":
+      return "Resumo que destaca a reabilitacao pulmonar como intervencao-chave para dispneia, capacidade funcional e qualidade de vida em pessoas com DPOC.";
+    case "World Health Organization rehabilitation considerations for post-COVID-19 condition":
+      return "Orientacao da OMS para condicionar a progressao ao quadro de sintomas, priorizando seguranca, interdisciplinaridade e retorno funcional gradual.";
+    case "Interventions to improve gross motor performance in children with cerebral palsy":
+      return "Mapa de evidencia favoravel a intervencoes centradas na funcao, na familia e na tarefa para melhorar habilidades motoras grossas na pediatria.";
+    case "Exercise interventions for preventing falls in older people living in the community":
+      return "Evidencia consistente de que exercicios multicomponentes, com desafio de equilibrio e forca, reduzem risco de quedas em idosos da comunidade.";
+    case "Consensus statement on return to sport after anterior cruciate ligament reconstruction":
+      return "Consenso que defende retorno ao esporte guiado por criterios objetivos de forca, salto, movimento e prontidao psicologica, nao apenas por prazo.";
+    case "Pelvic floor muscle training for women with stress urinary incontinence":
+      return "Reforca o treino muscular do assoalho pelvico como abordagem conservadora de primeira linha para sintomas de incontinencia urinaria de esforco.";
+    case "Manual therapy and exercise for neck pain":
+      return "Mostra que terapia manual funciona melhor quando integrada a exercicio ativo, em vez de ser usada como cuidado isolado.";
+    case "PEDro evidence summary for rotator cuff related shoulder pain exercise therapy":
+      return "Síntese focada em ombro que aponta beneficio do exercicio individualizado para dor e funcao, com progressao de carga e dose controlada.";
+    case "SciELO review on exercise and pelvic pain in women":
+      return "Revisao em portugues que organiza estrategias de educacao, exercicio e modulacao de sintomas para dor pelvica e saude da mulher.";
+    case "LILACS scoping review of fall-prevention education for older adults":
+      return "Levantamento latino-americano que valoriza programas multimodais para prevencao de quedas, incluindo exercicio, ambiente e orientacao.";
+    case "ClinicalTrials.gov trial of high-intensity gait training after stroke":
+      return "Registro de ensaio clinico sobre treino de marcha de alta intensidade, com foco em dose, seguranca e impacto funcional apos AVC.";
+    default:
+      return "Resumo editorial em portugues com foco em aplicacao clinica, curadoria e leitura rapida para estudo.";
+  }
+}
+
 const categories = [
   {
     name: "Ortopedia",
@@ -949,6 +994,7 @@ async function main() {
           where: { id: existing.id },
           data: {
             ...articleData,
+            editorialSummaryPt: editorialSummaryPt(article.title),
             categoryId: categoryMap.get(categorySlug)?.id,
             curatorId: userMap.get("curadoria@fisiobase.academy")?.id,
             rawMetadata: {
@@ -965,6 +1011,7 @@ async function main() {
       : await prisma.article.create({
           data: {
             ...articleData,
+            editorialSummaryPt: editorialSummaryPt(article.title),
             categoryId: categoryMap.get(categorySlug)?.id,
             curatorId: userMap.get("curadoria@fisiobase.academy")?.id,
             rawMetadata: {
@@ -990,6 +1037,7 @@ async function main() {
         slug: topic.slug,
         summary: topic.summary,
         coverImageUrl: atlasCoverImage(topic.slug),
+        illustrationUrls: atlasIllustrations(topic.slug),
         clinicalArea: topic.clinicalArea,
         bodyRegion: topic.bodyRegion,
         population: topic.population,
@@ -1003,6 +1051,7 @@ async function main() {
         title: topic.title,
         summary: topic.summary,
         coverImageUrl: atlasCoverImage(topic.slug),
+        illustrationUrls: atlasIllustrations(topic.slug),
         clinicalArea: topic.clinicalArea,
         bodyRegion: topic.bodyRegion,
         population: topic.population,

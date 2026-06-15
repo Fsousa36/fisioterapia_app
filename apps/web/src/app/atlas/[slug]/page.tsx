@@ -11,6 +11,7 @@ type AtlasDetail = {
   bodyRegion: string | null;
   population: string | null;
   coverImageUrl: string | null;
+  illustrationUrls: string[];
   tags: string[];
   evidenceLevel: string;
   recommendation: string;
@@ -116,6 +117,21 @@ export default async function AtlasDetailPage({ params }: { params: Promise<{ sl
       <div className="mt-6 grid gap-4 lg:grid-cols-[1.4fr_0.6fr]">
         <section className="space-y-4">
           <Card>
+            <h2 className="mb-4 text-lg font-semibold">Espaco para ilustracoes</h2>
+            {topic.illustrationUrls.length > 0 ? (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {topic.illustrationUrls.map((imageUrl, index) => (
+                  <div key={`${imageUrl}-${index}`} className="overflow-hidden rounded-md border border-border">
+                    <img alt={`${topic.title} - ilustracao ${index + 1}`} className="h-52 w-full object-cover" src={imageUrl} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted">Sem imagens de apoio cadastradas para este topico.</p>
+            )}
+          </Card>
+
+          <Card>
             <h2 className="mb-4 text-lg font-semibold">Perguntas PICO</h2>
             <div className="space-y-4">
               {topic.clinicalQuestions.map((item) => (
@@ -152,9 +168,9 @@ export default async function AtlasDetailPage({ params }: { params: Promise<{ sl
             <h2 className="mb-4 text-lg font-semibold">Fontes vinculadas</h2>
             <div className="space-y-3">
               {topic.articles.map((item) => (
-                <a
+                <Link
                   key={item.article.id}
-                  href={item.article.sourceUrl}
+                  href={`/artigos/${item.article.id}`}
                   className="block rounded-md border border-border p-3 transition-colors hover:border-primary"
                 >
                   <div className="text-sm font-medium">{item.article.title}</div>
@@ -165,7 +181,7 @@ export default async function AtlasDetailPage({ params }: { params: Promise<{ sl
                     {item.article.pmcid ? ` · PMCID ${item.article.pmcid}` : ""}
                   </div>
                   {item.article.license ? <div className="mt-1 text-xs text-muted">{item.article.license}</div> : null}
-                </a>
+                </Link>
               ))}
               {topic.articles.length === 0 ? <p className="text-sm text-muted">Sem artigos vinculados.</p> : null}
             </div>

@@ -34,6 +34,7 @@ const fields: CrudField[] = [
   { name: "language", label: "Idioma" },
   { name: "categoryId", label: "ID da categoria" },
   { name: "openAccess", label: "Open access", type: "checkbox" },
+  { name: "editorialSummaryPt", label: "Resumo editorial em portugues", type: "textarea" },
   { name: "abstract", label: "Abstract", type: "textarea" }
 ];
 
