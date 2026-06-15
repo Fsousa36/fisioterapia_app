@@ -35,7 +35,6 @@ COPY --from=build-api /app/packages/types/dist /app/packages/types/dist
 COPY --from=build-api /app/packages/types/package.json /app/packages/types/package.json
 COPY --from=build-api /app/packages/database/dist /app/packages/database/dist
 COPY --from=build-api /app/packages/database/package.json /app/packages/database/package.json
-COPY --from=build-api /app/packages/database/node_modules/.prisma /app/packages/database/node_modules/.prisma
 
 # Copy API dist
 COPY --from=build-api /app/apps/api/dist /app/apps/api/dist
