@@ -1,22 +1,28 @@
 FROM node:22-alpine AS base
 WORKDIR /app
-RUN corepack enable
+RUN corepack enable && pnpm config set store-dir /app/.pnpm-store
 
+# ---- Install deps ----
 FROM base AS deps
-COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml turbo.json tsconfig.base.json ./
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json tsconfig.base.json ./
 COPY apps/admin/package.json apps/admin/package.json
-RUN pnpm install --filter @fisiobase/admin... --frozen-lockfile=false
+RUN pnpm install --frozen-lockfile=false
 
-FROM deps AS build
+# ---- Build admin ----
+FROM deps AS build-admin
 COPY apps/admin apps/admin
 RUN pnpm --filter @fisiobase/admin build
 
+# ---- Runner (Next.js standalone) ----
 FROM base AS runner
 ENV NODE_ENV=production
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/apps/admin/.next ./apps/admin/.next
-COPY --from=build /app/apps/admin/package.json ./apps/admin/package.json
-COPY --from=build /app/apps/admin/public* ./apps/admin/public
+ENV PORT=3000
+
+# Next.js standalone output
+COPY --from=build-admin /app/apps/admin/.next/standalone /app/apps/admin/
+COPY --from=build-admin /app/apps/admin/.next/static /app/apps/admin/.next/static
+COPY --from=build-admin /app/apps/admin/public /app/apps/admin/public
+
 WORKDIR /app/apps/admin
 EXPOSE 3000
-CMD ["pnpm", "start"]
+CMD ["node", "server.js"]

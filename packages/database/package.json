@@ -3,10 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "main": "src/client.ts",
-  "types": "src/client.ts",
+  "main": "dist/client.js",
+  "types": "dist/client.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/client.js",
+      "require": "./dist/client.cjs",
+      "types": "./dist/client.d.ts"
+    }
+  },
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "tsc",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
