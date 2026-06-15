@@ -1,21 +1,4 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: fisiobase-postgres
-    environment:
-      POSTGRES_USER: fisiobase
-      POSTGRES_PASSWORD: fisiobase
-      POSTGRES_DB: fisiobase_academy
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U fisiobase -d fisiobase_academy"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   redis:
     image: redis:7-alpine
     container_name: fisiobase-redis
@@ -41,15 +24,15 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql://fisiobase:fisiobase@postgres:5432/fisiobase_academy?schema=public
+      DATABASE_URL: postgresql://fisiobase:vMKDpJxSqjPQUpYoD56M@fisiobase-academy-caatdc:5432/fisiobase
       REDIS_URL: redis://redis:6379
       MEILISEARCH_HOST: http://meilisearch:7700
       API_PORT: 3333
+      JWT_SECRET: change-me
+      JWT_EXPIRES_IN: 7d
     ports:
       - "3333:3333"
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_started
       meilisearch:
@@ -94,5 +77,4 @@ services:
       - web
 
 volumes:
-  postgres-data:
   meili-data:
